@@ -37,60 +37,92 @@ const promisifyFizzBuzz = async (i, word) => {
   });
 };
 
-let promises = [];
+const main = async () => {
+  let promises = [];
+  const numberOfWords = 100;
 
-const numberOfWords = 100;
-// Ex: 1
-let out = "";
-for (let i = 1; i <= numberOfWords; i++) {
-  out += `${i}: ${getRandomWordSync()} \n`;
-}
-console.log(out);
+  let startTime = process.hrtime();
+  // Ex: 1
+  let out = "";
+  for (let i = 1; i <= numberOfWords; i++) {
+    out += `${i}: ${getRandomWordSync()} \n`;
+  }
+  console.log(out);
+  let hrend = process.hrtime(startTime);
+  console.log(`Ex: 1 Execution time: ${hrend}ms \n\n`);
 
-// Ex: 2
-out = "";
-for (let i = 1; i <= numberOfWords; i++) {
-  let fizzBuzz = getFizzBuzz(i);
-  out += `${i}: ${fizzBuzz.length > 0 ? fizzBuzz : getRandomWordSync()} \n`;
-}
-console.log(out);
+  startTime = process.hrtime();
+  // Ex: 2
+  out = "";
+  for (let i = 1; i <= numberOfWords; i++) {
+    let fizzBuzz = getFizzBuzz(i);
+    out += `${i}: ${fizzBuzz.length > 0 ? fizzBuzz : getRandomWordSync()} \n`;
+  }
+  console.log(out);
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: 2 Execution time: ${hrend}ms \n\n`);
 
-// Ex: 2.1 with errors on
-out = "";
-for (let i = 1; i <= numberOfWords; i++) {
-  let fizzBuzz = getFizzBuzz(i);
-  out += `${i}: ${fizzBuzz.length > 0 ? fizzBuzz : getWodSync({ withErrors: true })} \n`;
-}
-console.log(out);
+  startTime = process.hrtime();
+  // Ex: 2.1 with errors on
+  out = "";
+  for (let i = 1; i <= numberOfWords; i++) {
+    let fizzBuzz = getFizzBuzz(i);
+    out += `${i}: ${fizzBuzz.length > 0 ? fizzBuzz : getWodSync({ withErrors: true })} \n`;
+  }
+  console.log(out);
 
-// Ex: 3.1
-promises = [];
-for (let i = 1; i <= numberOfWords; i++) {
-  promises.push(awaitWord(i));
-}
-Promise.all(promises).then(result => console.log(result.join("")));
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: 2.1 Execution time: ${hrend}ms \n\n`);
 
-// Ex: 3.2
-promises = [];
-for (let i = 1; i <= numberOfWords; i++) {
-  let fizzBuzz = getFizzBuzz(i);
-  promises.push(fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i));
-}
-Promise.all(promises).then(result => console.log(result.join("")));
+  startTime = process.hrtime();
+  // Ex: 3.1
+  promises = [];
+  for (let i = 1; i <= numberOfWords; i++) {
+    promises.push(awaitWord(i));
+  }
 
-// Ex: 4
-promises = [];
-for (let i = 1; i <= numberOfWords; i++) {
-  let fizzBuzz = getFizzBuzz(i);
-  promises.push(fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i, { withErrors: true }));
-}
-Promise.all(promises).then(result => console.log(result.join("")));
+  console.log((await Promise.all(promises)).join(""));
 
-// Ex: With slow
-promises = [];
-for (let i = 1; i <= numberOfWords; i++) {
-  let fizzBuzz = getFizzBuzz(i);
-  promises.push(fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i, { withErrors: true, slow: true }));
-}
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: 3.1 Execution time: ${hrend}ms \n\n`);
 
-Promise.all(promises).then(result => console.log(result.join("")));
+  startTime = process.hrtime();
+  // Ex: 3.2
+  promises = [];
+  for (let i = 1; i <= numberOfWords; i++) {
+    let fizzBuzz = getFizzBuzz(i);
+    promises.push(fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i));
+  }
+  console.log((await Promise.all(promises)).join(""));
+
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: 3.2 Execution time: ${hrend}ms \n\n`);
+
+  startTime = process.hrtime();
+  // Ex: 4
+  promises = [];
+  for (let i = 1; i <= numberOfWords; i++) {
+    let fizzBuzz = getFizzBuzz(i);
+    promises.push(fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i, { withErrors: true }));
+  }
+  console.log((await Promise.all(promises)).join(""));
+
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: 4 Execution time: ${hrend}ms \n\n`);
+
+  startTime = process.hrtime();
+  // Ex: With slow
+  promises = [];
+  for (let i = 1; i <= numberOfWords; i++) {
+    let fizzBuzz = getFizzBuzz(i);
+    promises.push(
+      fizzBuzz.length > 0 ? promisifyFizzBuzz(i, fizzBuzz) : awaitWord(i, { withErrors: true, slow: true })
+    );
+  }
+  console.log((await Promise.all(promises)).join(""));
+
+  hrend = process.hrtime(startTime);
+  console.log(`Ex: With slow Execution time: ${hrend}ms \n\n`);
+};
+
+main();
